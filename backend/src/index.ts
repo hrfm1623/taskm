@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client/edge";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { createDb } from "./db";
 import tagRouter from "./routes/tagRoutes";
 import taskRouter from "./routes/taskRoutes";
 import taskStatusRouter from "./routes/taskStatusRoutes";
@@ -14,16 +14,13 @@ const app = new Hono<Env>();
 // CORSの設定
 app.use("*", cors());
 
-// Prismaクライアントの初期化とミドルウェアの設定
+// サービスの初期化とミドルウェアの設定
 app.use("*", async (c, next) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: "file:./dev.db",
-  });
-
   // サービスの初期化
-  const taskService = createTaskService(prisma);
-  const tagService = createTagService(prisma);
-  const taskStatusService = createTaskStatusService(prisma);
+  const db = createDb(c.env.DB);
+  const taskService = createTaskService(db);
+  const tagService = createTagService(db);
+  const taskStatusService = createTaskStatusService(db);
 
   // サービスをコンテキストに設定
   c.set("taskService", taskService);
@@ -31,7 +28,6 @@ app.use("*", async (c, next) => {
   c.set("taskStatusService", taskStatusService);
 
   await next();
-  await prisma.$disconnect();
 });
 
 // ヘルスチェック

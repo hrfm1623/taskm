@@ -9,7 +9,8 @@ type TaskStatusService = ReturnType<
 >;
 
 export type Bindings = {
-  DATABASE_URL: string;
+  DB: D1Database;
+  ENV: string;
 };
 
 export type Variables = {

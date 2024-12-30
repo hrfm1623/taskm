@@ -1,6 +1,7 @@
 name = "taskm-api"
 main = "src/index.ts"
 compatibility_date = "2023-12-30"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENV = "development"
@@ -12,9 +13,6 @@ port = 8787
 binding = "DB"
 database_name = "taskm-db"
 database_id = "f50a2349-3841-423f-9fae-7e167b6190cd"
-
-[build]
-command = "pnpm prisma generate"
 
 [env.production]
 vars = { ENV = "production" }

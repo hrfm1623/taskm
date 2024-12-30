@@ -3,8 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
-    "dev:clear": "fuser -k 8787/tcp || true && turbo dev --force && rm -rf .turbo",
+    "dev": "fuser -k 8787/tcp || true && turbo dev --force && rm -rf .turbo",
     "lint": "turbo lint",
     "test": "turbo test",
     "clean": "turbo clean"

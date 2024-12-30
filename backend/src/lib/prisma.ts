@@ -1,9 +1,11 @@
-import { PrismaClient } from "@prisma/client/edge";
+import { D1Database } from "@cloudflare/workers-types";
 
-const createPrismaClient = (databaseUrl: string) => {
-  return new PrismaClient({
-    datasourceUrl: databaseUrl,
-  });
+const createD1Client = (db: D1Database) => {
+  if (!db) {
+    throw new Error("D1 database instance is required");
+  }
+
+  return db;
 };
 
-export { createPrismaClient };
+export { createD1Client };
