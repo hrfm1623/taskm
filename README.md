@@ -27,7 +27,8 @@ Cloudflare WorkersとNext.jsを使用したシンプルなタスク管理アプ�
 - React Query
 - dnd-kit
 - TailwindCSS
-- DaisyUI
+- Aceternity UI
+- Next UI
 - TypeScript
 
 ## 開発環境のセットアップ
