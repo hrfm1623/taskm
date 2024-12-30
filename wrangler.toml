@@ -1,0 +1,10 @@
+name = "taskm"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "taskm-db"
+database_id = ""  # wrangler d1 create taskm-db で取得したIDを設定してください
+
+[vars]
+NODE_ENV = "development" 
