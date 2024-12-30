@@ -1,11 +1,15 @@
-import { prisma } from "../lib/prisma";
-import type { Status } from "@prisma/client";
+import type { PrismaClient, Status } from "@prisma/client/edge";
 import type {
   CreateTaskStatusInput,
   UpdateTaskStatusInput,
 } from "../types/database";
 
-const serializeTaskStatus = (status: any) => {
+interface SerializedStatus extends Omit<Status, "createdAt" | "updatedAt"> {
+  createdAt: string;
+  updatedAt: string;
+}
+
+const serializeTaskStatus = (status: Status): SerializedStatus => {
   return {
     ...status,
     createdAt: status.createdAt.toISOString(),
@@ -13,8 +17,8 @@ const serializeTaskStatus = (status: any) => {
   };
 };
 
-export const taskStatusService = {
-  async getAllTaskStatuses(): Promise<Status[]> {
+export const createTaskStatusService = (prisma: PrismaClient) => ({
+  async getAllTaskStatuses(): Promise<SerializedStatus[]> {
     const statuses = await prisma.status.findMany({
       orderBy: {
         id: "asc",
@@ -23,21 +27,25 @@ export const taskStatusService = {
     return statuses.map(serializeTaskStatus);
   },
 
-  async getTaskStatusById(id: number): Promise<Status | null> {
+  async getTaskStatusById(id: number): Promise<SerializedStatus | null> {
     const status = await prisma.status.findUnique({
       where: { id },
     });
     return status ? serializeTaskStatus(status) : null;
   },
 
-  async createTaskStatus(data: CreateTaskStatusInput): Promise<Status> {
+  async createTaskStatus(
+    data: CreateTaskStatusInput
+  ): Promise<SerializedStatus> {
     const status = await prisma.status.create({
       data,
     });
     return serializeTaskStatus(status);
   },
 
-  async updateTaskStatus(data: UpdateTaskStatusInput): Promise<Status> {
+  async updateTaskStatus(
+    data: UpdateTaskStatusInput
+  ): Promise<SerializedStatus> {
     const { id, ...updateData } = data;
     const status = await prisma.status.update({
       where: { id },
@@ -51,4 +59,4 @@ export const taskStatusService = {
       where: { id },
     });
   },
-};
+});

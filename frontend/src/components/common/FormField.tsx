@@ -1,11 +1,16 @@
-import { Input, Select, Textarea, SelectItem } from "@nextui-org/react";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Label } from "@radix-ui/react-label";
+import { motion } from "framer-motion";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-
-const baseFieldProps = {
-  labelPlacement: "outside" as const,
-  variant: "bordered" as const,
-  radius: "sm" as const,
-};
 
 type FormFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -15,6 +20,7 @@ type FormFieldProps<T extends FieldValues> = {
   type?: "text" | "date" | "select" | "textarea";
   options?: { id: number; name: string }[];
   minRows?: number;
+  className?: string;
 };
 
 export function FormField<T extends FieldValues>({
@@ -25,56 +31,77 @@ export function FormField<T extends FieldValues>({
   type = "text",
   options,
   minRows,
+  className,
 }: FormFieldProps<T>) {
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => {
-        switch (type) {
-          case "select":
-            return (
-              <Select
-                {...baseFieldProps}
-                label={label}
-                selectedKeys={[String(field.value)]}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-                errorMessage={error?.message}
-                isRequired={isRequired}
-              >
-                {options?.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {option.name}
-                  </SelectItem>
-                )) ?? []}
-              </Select>
-            );
-          case "textarea":
-            return (
-              <Textarea
-                {...baseFieldProps}
-                {...field}
-                label={label}
-                minRows={minRows}
-                errorMessage={error?.message}
-                isRequired={isRequired}
-              />
-            );
-          case "date":
-          case "text":
-          default:
-            return (
-              <Input
-                {...baseFieldProps}
-                {...field}
-                type={type}
-                label={label}
-                errorMessage={error?.message}
-                isRequired={isRequired}
-              />
-            );
-        }
-      }}
-    />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className={cn("space-y-2", className)}
+    >
+      <Label
+        htmlFor={name}
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        {label}
+        {isRequired && <span className="text-destructive">*</span>}
+      </Label>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => {
+          switch (type) {
+            case "select":
+              return (
+                <Select
+                  value={String(field.value)}
+                  onValueChange={(value) => field.onChange(Number(value))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder=" " />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options?.map((option) => (
+                      <SelectItem
+                        key={option.id}
+                        value={String(option.id)}
+                        className="cursor-pointer"
+                      >
+                        {option.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              );
+            case "textarea":
+              return (
+                <Textarea
+                  {...field}
+                  id={name}
+                  placeholder=" "
+                  rows={minRows}
+                  className={cn(
+                    "min-h-[80px] resize-none",
+                    error && "border-destructive"
+                  )}
+                />
+              );
+            case "date":
+            case "text":
+            default:
+              return (
+                <Input
+                  {...field}
+                  id={name}
+                  type={type}
+                  placeholder=" "
+                  className={cn(error && "border-destructive")}
+                />
+              );
+          }
+        }}
+      />
+    </motion.div>
   );
 }

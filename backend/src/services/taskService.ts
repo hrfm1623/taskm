@@ -1,7 +1,30 @@
-import { prisma } from "../lib/prisma";
+import type { PrismaClient, Status, Tag, Task } from "@prisma/client/edge";
 import type { CreateTaskInput, UpdateTaskInput } from "../schemas/task";
 
-const serializeTask = (task: any) => {
+interface SerializedTask
+  extends Omit<Task, "createdAt" | "updatedAt" | "dueDate"> {
+  createdAt: string;
+  updatedAt: string;
+  dueDate: string | null;
+  status: {
+    id: number;
+    name: string;
+    color: string;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  tags: {
+    id: number;
+    name: string;
+    color: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+}
+
+const serializeTask = (
+  task: Task & { status: Status | null; tags: Tag[] }
+): SerializedTask => {
   return {
     ...task,
     createdAt: task.createdAt.toISOString(),
@@ -14,18 +37,16 @@ const serializeTask = (task: any) => {
           updatedAt: task.status.updatedAt.toISOString(),
         }
       : null,
-    tags: task.tags
-      ? task.tags.map((tag: any) => ({
-          ...tag,
-          createdAt: tag.createdAt.toISOString(),
-          updatedAt: tag.updatedAt.toISOString(),
-        }))
-      : [],
+    tags: task.tags.map((tag) => ({
+      ...tag,
+      createdAt: tag.createdAt.toISOString(),
+      updatedAt: tag.updatedAt.toISOString(),
+    })),
   };
 };
 
-export const taskService = {
-  async getAllTasks() {
+export const createTaskService = (prisma: PrismaClient) => ({
+  async getAllTasks(): Promise<SerializedTask[]> {
     const tasks = await prisma.task.findMany({
       include: {
         status: true,
@@ -38,7 +59,7 @@ export const taskService = {
     return tasks.map(serializeTask);
   },
 
-  async getTaskById(id: number) {
+  async getTaskById(id: number): Promise<SerializedTask | null> {
     const task = await prisma.task.findUnique({
       where: { id },
       include: {
@@ -49,7 +70,7 @@ export const taskService = {
     return task ? serializeTask(task) : null;
   },
 
-  async createTask(data: CreateTaskInput) {
+  async createTask(data: CreateTaskInput): Promise<SerializedTask> {
     const { tagIds, ...taskData } = data;
     const task = await prisma.task.create({
       data: {
@@ -68,7 +89,7 @@ export const taskService = {
     return serializeTask(task);
   },
 
-  async updateTask(id: number, data: UpdateTaskInput) {
+  async updateTask(id: number, data: UpdateTaskInput): Promise<SerializedTask> {
     const { tagIds, ...taskData } = data;
     const task = await prisma.task.update({
       where: { id },
@@ -88,19 +109,19 @@ export const taskService = {
     return serializeTask(task);
   },
 
-  async deleteTask(id: number) {
-    return prisma.task.delete({
+  async deleteTask(id: number): Promise<void> {
+    await prisma.task.delete({
       where: { id },
     });
   },
 
-  async updateTaskPositions(taskIds: number[]) {
+  async updateTaskPositions(taskIds: number[]): Promise<void> {
     const updates = taskIds.map((id, index) => {
       return prisma.task.update({
         where: { id },
         data: { position: index },
       });
     });
-    return prisma.$transaction(updates);
+    await prisma.$transaction(updates);
   },
-};
+});

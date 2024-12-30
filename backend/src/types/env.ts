@@ -1,8 +1,24 @@
-import type { D1Database } from "@cloudflare/workers-types";
+type TaskService = ReturnType<
+  typeof import("../services/taskService").createTaskService
+>;
+type TagService = ReturnType<
+  typeof import("../services/tagService").createTagService
+>;
+type TaskStatusService = ReturnType<
+  typeof import("../services/taskStatusService").createTaskStatusService
+>;
 
-type Bindings = {
-  DB: D1Database;
-  ENV: "development" | "production";
+export type Bindings = {
+  DATABASE_URL: string;
 };
 
-export type Env = Bindings;
+export type Variables = {
+  taskService: TaskService;
+  tagService: TagService;
+  taskStatusService: TaskStatusService;
+};
+
+export type Env = {
+  Bindings: Bindings;
+  Variables: Variables;
+};

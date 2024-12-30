@@ -1,12 +1,12 @@
 import type {
+  CreateTagInput,
+  CreateTaskInput,
+  CreateTaskStatusInput,
+  Tag,
   Task,
   TaskStatus,
-  Tag,
-  CreateTaskInput,
-  UpdateTaskInput,
-  CreateTagInput,
   UpdateTagInput,
-  CreateTaskStatusInput,
+  UpdateTaskInput,
   UpdateTaskStatusInput,
 } from "@/types/api";
 
@@ -16,20 +16,29 @@ async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
+  try {
+    console.log(`Fetching ${API_BASE_URL}${endpoint}`, options);
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "APIエラーが発生しました");
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("API Error:", error);
+      throw new Error(error.message || "APIエラーが発生しました");
+    }
+
+    const data = await response.json();
+    console.log(`Response from ${endpoint}:`, data);
+    return data;
+  } catch (error) {
+    console.error("API Request Failed:", error);
+    throw error;
   }
-
-  return response.json();
 }
 
 export const api = {

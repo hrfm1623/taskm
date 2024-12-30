@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client/edge";
 
-const prisma = new PrismaClient();
+const createPrismaClient = (databaseUrl: string) => {
+  return new PrismaClient({
+    datasourceUrl: databaseUrl,
+  });
+};
 
-export { prisma };
+export { createPrismaClient };
