@@ -1,6 +1,8 @@
 import type { D1Database } from "@cloudflare/workers-types";
 
-export interface Env {
+type Bindings = {
   DB: D1Database;
-  NODE_ENV: string;
-}
+  ENV: "development" | "production";
+};
+
+export type Env = Bindings;

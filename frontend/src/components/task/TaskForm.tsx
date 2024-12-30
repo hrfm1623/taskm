@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { FormField } from "@/components/common/FormField";
 import type { Tag, Task, TaskStatus } from "@/types/api";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Card, Checkbox, CheckboxGroup } from "@nextui-org/react";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 const schema = z.object({
   title: z.string().min(1, "必須項目です"),
@@ -34,10 +34,10 @@ export function TaskForm({
   isSubmitting = false,
 }: TaskFormProps) {
   const {
-    register,
+    control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: {},
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -62,75 +62,82 @@ export function TaskForm({
   }, [task, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
-        label="タイトル"
-        error={errors.title?.message}
-        {...register("title")}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <FormField
+            control={control}
+            name="title"
+            label="タイトル"
+            isRequired
+          />
 
-      <div className="form-control w-full">
-        <label className="label">
-          <span className="label-text">説明</span>
-        </label>
-        <textarea
-          className="textarea textarea-bordered h-24"
-          {...register("description")}
-        />
-      </div>
+          <FormField
+            control={control}
+            name="description"
+            label="説明"
+            type="textarea"
+            minRows={5}
+          />
+        </div>
 
-      <div className="form-control w-full">
-        <label className="label">
-          <span className="label-text">ステータス</span>
-        </label>
-        <select
-          className="select select-bordered"
-          {...register("statusId", { valueAsNumber: true })}
-        >
-          {statuses.map((status) => (
-            <option key={status.id} value={status.id}>
-              {status.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="space-y-6">
+          <FormField
+            control={control}
+            name="statusId"
+            label="ステータス"
+            type="select"
+            options={statuses}
+          />
 
-      <Input
-        type="date"
-        label="期限"
-        error={errors.dueDate?.message}
-        {...register("dueDate")}
-      />
+          <FormField
+            control={control}
+            name="dueDate"
+            label="期限"
+            type="date"
+          />
 
-      <div className="form-control w-full">
-        <label className="label">
-          <span className="label-text">タグ</span>
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <label key={tag.id} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                value={tag.id}
-                className="checkbox"
-                {...register("tagIds", { valueAsNumber: true })}
+          <div className="space-y-3">
+            <p className="text-sm font-medium">タグ</p>
+            <Card className="p-4 shadow-sm">
+              <Controller
+                name="tagIds"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <CheckboxGroup
+                    value={value?.map(String)}
+                    onValueChange={(values) => onChange(values.map(Number))}
+                    className="gap-2"
+                  >
+                    {tags.map((tag) => (
+                      <Checkbox key={tag.id} value={String(tag.id)} radius="sm">
+                        {tag.name}
+                      </Checkbox>
+                    ))}
+                  </CheckboxGroup>
+                )}
               />
-              <span
-                className="badge"
-                style={{ backgroundColor: tag.color, color: "#fff" }}
-              >
-                {tag.name}
-              </span>
-            </label>
-          ))}
+            </Card>
+          </div>
         </div>
       </div>
 
-      <div className="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onCancel}>
+      <div className="flex justify-end gap-3">
+        <Button
+          color="danger"
+          variant="light"
+          onPress={onCancel}
+          isDisabled={isSubmitting}
+          radius="sm"
+        >
           キャンセル
         </Button>
-        <Button type="submit" isLoading={isSubmitting}>
+        <Button
+          color="primary"
+          type="submit"
+          isLoading={isSubmitting}
+          radius="sm"
+        >
           {task ? "更新" : "作成"}
         </Button>
       </div>

@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import type { ReactElement } from "react";
 import type { Task } from "@/types/api";
-import { TaskCard } from "./TaskCard";
+import { TaskCard } from "@/components/ui/aceternity/TaskCard";
 
 interface TaskListProps {
   tasks: Task[];
@@ -31,7 +31,11 @@ export function TaskList({
   onReorder,
 }: TaskListProps): ReactElement {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -59,7 +63,7 @@ export function TaskList({
         items={tasks.map((task) => task.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}

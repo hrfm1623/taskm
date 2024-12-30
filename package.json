@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:clear": "turbo dev --force && rm -rf .turbo",
     "lint": "turbo lint",
     "test": "turbo test",
     "clean": "turbo clean"

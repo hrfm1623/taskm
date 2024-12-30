@@ -1,13 +1,32 @@
 import { prisma } from "../lib/prisma";
-import type {
-  CreateTaskInput,
-  UpdateTaskInput,
-  TaskWithRelations,
-} from "../types/database";
+import type { CreateTaskInput, UpdateTaskInput } from "../schemas/task";
+
+const serializeTask = (task: any) => {
+  return {
+    ...task,
+    createdAt: task.createdAt.toISOString(),
+    updatedAt: task.updatedAt.toISOString(),
+    dueDate: task.dueDate ? task.dueDate.toISOString() : null,
+    status: task.status
+      ? {
+          ...task.status,
+          createdAt: task.status.createdAt.toISOString(),
+          updatedAt: task.status.updatedAt.toISOString(),
+        }
+      : null,
+    tags: task.tags
+      ? task.tags.map((tag: any) => ({
+          ...tag,
+          createdAt: tag.createdAt.toISOString(),
+          updatedAt: tag.updatedAt.toISOString(),
+        }))
+      : [],
+  };
+};
 
 export const taskService = {
-  async getAllTasks(): Promise<TaskWithRelations[]> {
-    return prisma.task.findMany({
+  async getAllTasks() {
+    const tasks = await prisma.task.findMany({
       include: {
         status: true,
         tags: true,
@@ -16,21 +35,23 @@ export const taskService = {
         position: "asc",
       },
     });
+    return tasks.map(serializeTask);
   },
 
-  async getTaskById(id: number): Promise<TaskWithRelations | null> {
-    return prisma.task.findUnique({
+  async getTaskById(id: number) {
+    const task = await prisma.task.findUnique({
       where: { id },
       include: {
         status: true,
         tags: true,
       },
     });
+    return task ? serializeTask(task) : null;
   },
 
-  async createTask(data: CreateTaskInput): Promise<TaskWithRelations> {
+  async createTask(data: CreateTaskInput) {
     const { tagIds, ...taskData } = data;
-    return prisma.task.create({
+    const task = await prisma.task.create({
       data: {
         ...taskData,
         tags: tagIds
@@ -44,17 +65,18 @@ export const taskService = {
         tags: true,
       },
     });
+    return serializeTask(task);
   },
 
-  async updateTask(data: UpdateTaskInput): Promise<TaskWithRelations> {
-    const { id, tagIds, ...updateData } = data;
-    return prisma.task.update({
+  async updateTask(id: number, data: UpdateTaskInput) {
+    const { tagIds, ...taskData } = data;
+    const task = await prisma.task.update({
       where: { id },
       data: {
-        ...updateData,
+        ...taskData,
         tags: tagIds
           ? {
-              set: tagIds.map((tagId) => ({ id: tagId })),
+              set: tagIds.map((id) => ({ id })),
             }
           : undefined,
       },
@@ -63,22 +85,22 @@ export const taskService = {
         tags: true,
       },
     });
+    return serializeTask(task);
   },
 
-  async deleteTask(id: number): Promise<void> {
-    await prisma.task.delete({
+  async deleteTask(id: number) {
+    return prisma.task.delete({
       where: { id },
     });
   },
 
-  async updateTaskPositions(taskIds: number[]): Promise<void> {
-    await prisma.$transaction(
-      taskIds.map((id, index) =>
-        prisma.task.update({
-          where: { id },
-          data: { position: index },
-        })
-      )
-    );
+  async updateTaskPositions(taskIds: number[]) {
+    const updates = taskIds.map((id, index) => {
+      return prisma.task.update({
+        where: { id },
+        data: { position: index },
+      });
+    });
+    return prisma.$transaction(updates);
   },
 };
