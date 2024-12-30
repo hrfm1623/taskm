@@ -1,0 +1,35 @@
+{
+  "name": "@taskm/backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "build": "wrangler deploy --dry-run src/index.ts",
+    "deploy": "wrangler deploy src/index.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@prisma/client": "5.7.1",
+    "@taskm/shared-types": "workspace:*",
+    "hono": "3.11.7",
+    "@hono/zod-validator": "0.1.11",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20231218.0",
+    "@types/node": "20.10.6",
+    "prisma": "5.7.1",
+    "typescript": "5.3.3",
+    "wrangler": "3.22.1",
+    "@typescript-eslint/eslint-plugin": "6.16.0",
+    "@typescript-eslint/parser": "6.16.0",
+    "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-unused-imports": "3.0.0"
+  }
+}

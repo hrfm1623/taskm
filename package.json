@@ -1,16 +1,20 @@
 {
   "name": "taskm",
-  "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
-    "lint:fix": "pnpm -r lint:fix",
-    "format": "pnpm -r format",
-    "type-check": "pnpm -r type-check"
-  }
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "turbo": "2.0.1"
+  },
+  "packageManager": "pnpm@8.13.1",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/*"
+  ]
 }
