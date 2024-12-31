@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://taskm.pages.dev",
+      "https://taskm-seven.vercel.app",
       "https://twilight-mouse-9823.hiro3510enic.workers.dev",
     ],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
