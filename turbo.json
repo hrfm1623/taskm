@@ -4,13 +4,11 @@
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "lint"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": ["^build"]
     },
     "dev": {
       "persistent": true,
-      "cache": false,
-      "dependsOn": ["^build"]
+      "cache": false
     },
     "lint": {
       "outputs": ["node_modules/.cache/eslint/**", "node_modules/.cache/tsc/**"]
