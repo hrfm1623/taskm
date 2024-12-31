@@ -2,11 +2,11 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [build]
-command = "cd frontend && pnpm install && pnpm pages:build"
+command = "cd frontend && pnpm install && pnpm build"
 cwd = "frontend"
 
 [build.output]
-directory = "frontend/.vercel/output/static"
+directory = "frontend/.next"
 
 [pages]
-pages_build_output_dir = "frontend/.vercel/output/static"
+pages_build_output_dir = "frontend/.next"
