@@ -16,20 +16,39 @@ Cloudflare WorkersとNext.jsを使用したシンプルなタスク管理アプ�
 ### バックエンド
 
 - Cloudflare Workers
-- Hono
-- Cloudflare D1 (SQLite)
-- Prisma
+- Hono v4.0.0
+- Turso (LibSQL)
+- Drizzle ORM
+- Zod
 - TypeScript
 
 ### フロントエンド
 
-- Next.js
-- React Query
+- Next.js 14
+- React Query (TanStack Query)
 - dnd-kit
 - TailwindCSS
 - Aceternity UI
 - Next UI
+- Radix UI
 - TypeScript
+
+### 開発ツール
+
+- pnpm (パッケージマネージャー)
+- Turborepo (モノレポ管理)
+- ESLint
+- Prettier
+
+## プロジェクト構成
+
+```
+.
+├── backend/          # バックエンドアプリケーション
+├── frontend/         # フロントエンドアプリケーション
+├── packages/         # 共有パッケージ
+└── .github/          # GitHub Actions ワークフロー
+```
 
 ## 開発環境のセットアップ
 
@@ -43,7 +62,7 @@ pnpm install
 
 - Cloudflareアカウントを作成
 - Workers & Pagesプロジェクトを作成
-- D1データベースを作成
+- Turso データベースを作成
 - wranglerでログイン
 
 ```bash
@@ -52,25 +71,33 @@ wrangler login
 
 3. 環境変数の設定
 
+バックエンド:
+
 ```bash
-cp .env.example .env
+cp backend/.env.example backend/.env
 ```
 
-必要な環境変数を設定
+フロントエンド:
+
+```bash
+cp frontend/.env.example frontend/.env.local
+```
+
+必要な環境変数を設定してください。
 
 4. 開発サーバーの起動
 
 バックエンド:
 
 ```bash
-cd packages/backend
+cd backend
 pnpm dev
 ```
 
 フロントエンド:
 
 ```bash
-cd packages/frontend
+cd frontend
 pnpm dev
 ```
 
@@ -79,14 +106,15 @@ pnpm dev
 1. バックエンドのデプロイ
 
 ```bash
-cd packages/backend
+cd backend
 pnpm deploy
 ```
 
 2. フロントエンドのデプロイ
 
 ```bash
-cd packages/frontend
-pnpm build
-pnpm deploy
+cd frontend
+pnpm pages:build
 ```
+
+デプロイはGitHub Actionsを通じて自動的に行われます。
