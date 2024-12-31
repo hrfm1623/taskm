@@ -1,3 +1,5 @@
+import { TaskCard } from "@/components/task/TaskCard";
+import type { Task } from "@/types/api";
 import {
   DndContext,
   DragEndEvent,
@@ -14,8 +16,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { ReactElement } from "react";
-import type { Task } from "@/types/api";
-import { TaskCard } from "@/components/ui/aceternity/TaskCard";
 
 interface TaskListProps {
   tasks: Task[];

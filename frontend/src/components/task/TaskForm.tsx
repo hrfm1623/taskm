@@ -1,7 +1,9 @@
 import { FormField } from "@/components/common/FormField";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Tag, Task, TaskStatus } from "@/types/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Checkbox, CheckboxGroup } from "@nextui-org/react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -63,7 +65,7 @@ export function TaskForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="space-y-6">
           <FormField
             control={control}
@@ -99,22 +101,33 @@ export function TaskForm({
 
           <div className="space-y-3">
             <p className="text-sm font-medium">タグ</p>
-            <Card className="p-4 shadow-sm">
+            <Card className="p-4">
               <Controller
                 name="tagIds"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <CheckboxGroup
-                    value={value?.map(String)}
-                    onValueChange={(values) => onChange(values.map(Number))}
-                    className="gap-2"
-                  >
+                  <div className="flex flex-col gap-2">
                     {tags.map((tag) => (
-                      <Checkbox key={tag.id} value={String(tag.id)} radius="sm">
-                        {tag.name}
-                      </Checkbox>
+                      <div key={tag.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`tag-${tag.id}`}
+                          checked={value?.includes(tag.id)}
+                          onCheckedChange={(checked) => {
+                            const newValue = checked
+                              ? [...(value ?? []), tag.id]
+                              : (value ?? []).filter((id) => id !== tag.id);
+                            onChange(newValue);
+                          }}
+                        />
+                        <label
+                          htmlFor={`tag-${tag.id}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {tag.name}
+                        </label>
+                      </div>
                     ))}
-                  </CheckboxGroup>
+                  </div>
                 )}
               />
             </Card>
@@ -124,20 +137,14 @@ export function TaskForm({
 
       <div className="flex justify-end gap-3">
         <Button
-          color="danger"
-          variant="light"
-          onPress={onCancel}
-          isDisabled={isSubmitting}
-          radius="sm"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+          className="text-destructive hover:bg-destructive/10"
         >
           キャンセル
         </Button>
-        <Button
-          color="primary"
-          type="submit"
-          isLoading={isSubmitting}
-          radius="sm"
-        >
+        <Button type="submit" disabled={isSubmitting}>
           {task ? "更新" : "作成"}
         </Button>
       </div>
