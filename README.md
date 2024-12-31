@@ -17,7 +17,6 @@ Cloudflare WorkersとNext.jsを使用したシンプルなタスク管理アプ�
 
 - Cloudflare Workers
 - Hono v4.0.0
-- Turso (LibSQL)
 - Drizzle ORM
 - Zod
 - TypeScript
@@ -60,7 +59,7 @@ pnpm install
 
 - Cloudflareアカウントを作成
 - Workers & Pagesプロジェクトを作成
-- Turso データベースを作成
+- D1データベースを作成
 - wranglerでログイン
 
 ```bash
