@@ -6,7 +6,7 @@
     "dev": "next dev",
     "dev:clear": "next dev --clear",
     "clean": "rm -rf .next/cache",
-    "build": "next build",
+    "build": "next build && pnpm clean",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
