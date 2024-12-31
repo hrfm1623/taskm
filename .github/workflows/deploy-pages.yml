@@ -1,7 +1,7 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 手動実行用のトリガー
     inputs:
       environment:
         description: "デプロイ環境を選択"
@@ -19,44 +19,4 @@ jobs:
     steps:
       - name: Deploy to Cloudflare Pages
         run: |
-          # デプロイをトリガー
-          response=$(curl -s -X POST "${{ secrets.CLOUD_FLARE_DEPLOY_HOOK }}")
-          echo "デプロイを開始しました"
-          echo "Response: $response"
-
-          # デプロイメントIDを取得
-          deployment_id=$(echo "$response" | grep -o '"id":"[^"]*' | cut -d'"' -f4)
-          if [ -z "$deployment_id" ]; then
-            echo "デプロイメントIDの取得に失敗しました"
-            exit 1
-          fi
-          echo "デプロイメントID: $deployment_id"
-
-          # デプロイ状態を確認（最大10分間）
-          max_attempts=60
-          attempt=0
-          while [ $attempt -lt $max_attempts ]; do
-            status_response=$(curl -s -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-              "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/deployments/$deployment_id")
-            
-            deployment_status=$(echo "$status_response" | grep -o '"status":"[^"]*' | cut -d'"' -f4)
-            echo "現在のステータス: $deployment_status"
-            
-            if [ "$deployment_status" = "success" ]; then
-              echo "デプロイが成功しました"
-              exit 0
-            elif [ "$deployment_status" = "failed" ]; then
-              echo "デプロイが失敗しました"
-              echo "詳細: $status_response"
-              exit 1
-            elif [ "$deployment_status" = "canceled" ]; then
-              echo "デプロイがキャンセルされました"
-              exit 1
-            fi
-            
-            attempt=$((attempt + 1))
-            sleep 10
-          done
-
-          echo "デプロイのタイムアウトが発生しました"
-          exit 1
+          curl -X POST "${{ secrets.CLOUD_FLARE_DEPLOY_HOOK }}"
