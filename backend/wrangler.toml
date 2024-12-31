@@ -19,3 +19,7 @@ vars = { ENV = "production" }
 d1_databases = [
   { binding = "DB", database_name = "taskm-db", database_id = "f50a2349-3841-423f-9fae-7e167b6190cd" }
 ] 
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
