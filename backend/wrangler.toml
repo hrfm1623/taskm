@@ -1,4 +1,4 @@
-name = "taskm-api"
+name = "twilight-mouse-9823"
 main = "src/index.ts"
 compatibility_date = "2023-12-30"
 compatibility_flags = ["nodejs_compat"]
