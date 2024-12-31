@@ -2,10 +2,11 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [build]
-command = "npm run pages:build"
+command = "cd frontend && pnpm install && pnpm pages:build"
+cwd = "frontend"
 
-[build.upload]
-format = "service-worker"
+[build.output]
+directory = ".vercel/output/static"
 
 [pages]
 pages_build_output_dir = ".vercel/output/static"
