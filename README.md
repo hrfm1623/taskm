@@ -28,8 +28,6 @@ Cloudflare WorkersとNext.jsを使用したシンプルなタスク管理アプ�
 - React Query (TanStack Query)
 - dnd-kit
 - TailwindCSS
-- Aceternity UI
-- Next UI
 - Radix UI
 - TypeScript
 
