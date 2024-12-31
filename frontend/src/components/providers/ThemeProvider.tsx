@@ -12,11 +12,8 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     setMounted(true);
+    return () => setMounted(false);
   }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <NextThemesProvider
@@ -24,6 +21,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      forcedTheme={!mounted ? "light" : undefined}
     >
       {children}
     </NextThemesProvider>

@@ -4,8 +4,8 @@ compatibility_flags = ["nodejs_compat"]
 [build]
 command = "pnpm install && pnpm build"
 
-[build.output]
-directory = ".next"
+[site]
+bucket = ".next/static"
 
-[pages]
-pages_build_output_dir = ".next"
+[build.upload]
+format = "service-worker"
