@@ -3,10 +3,11 @@
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { TaskForm } from "@/components/task/TaskForm";
 import { TaskList } from "@/components/task/TaskList";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import type { Task } from "@/types/api";
-import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import type { ReactElement } from "react";
 import { useState } from "react";
 
@@ -104,39 +105,37 @@ export function HomePage(): ReactElement {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-content1">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card className="bg-background/60 dark:bg-default-100/50 shadow-medium backdrop-blur-[10px] backdrop-saturate-150 border-1 border-foreground/10">
-          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 pt-6">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="rounded-lg border bg-card p-6 shadow-lg backdrop-blur-[10px]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
               <div>
-                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                <h1 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-400 dark:to-purple-400 sm:text-4xl">
                   タスク管理
                 </h1>
-                <p className="mt-2 text-foreground/90 dark:text-foreground/80 font-medium">
+                <p className="mt-2 font-medium text-muted-foreground">
                   効率的なタスク管理で生産性を向上させましょう
                 </p>
               </div>
               <ThemeToggle />
             </div>
             <Button
-              color="primary"
-              variant="shadow"
-              onPress={() => setIsFormOpen(true)}
               size="lg"
-              startContent={<PlusIcon />}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white font-semibold shadow-lg hover:opacity-90 transition-all duration-200 w-full sm:w-auto"
+              onClick={() => setIsFormOpen(true)}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 font-semibold text-white transition-all duration-200 hover:opacity-90 dark:from-blue-500 dark:to-purple-500 sm:w-auto"
             >
+              <Plus className="mr-2 h-5 w-5" />
               新規タスク
             </Button>
-          </CardHeader>
+          </div>
 
-          <CardBody className="px-6 py-4">
+          <div className="px-0 py-4">
             {isFormOpen && (
               <>
-                <Divider className="my-6 opacity-50" />
+                <div className="my-6 h-px bg-border opacity-50" />
                 <div className="mb-6">
-                  <h2 className="mb-4 text-2xl font-bold text-foreground/90 dark:text-foreground/90">
+                  <h2 className="mb-4 text-2xl font-bold text-foreground/90">
                     {selectedTask ? "タスクの編集" : "新規タスク"}
                   </h2>
                   <TaskForm
@@ -151,7 +150,7 @@ export function HomePage(): ReactElement {
                     }
                   />
                 </div>
-                <Divider className="my-6 opacity-50" />
+                <div className="my-6 h-px bg-border opacity-50" />
               </>
             )}
 
@@ -161,28 +160,9 @@ export function HomePage(): ReactElement {
               onDelete={handleDelete}
               onReorder={handleReorder}
             />
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" y1="5" x2="12" y2="19"></line>
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
   );
 }

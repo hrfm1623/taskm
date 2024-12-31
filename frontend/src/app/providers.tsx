@@ -1,7 +1,6 @@
 "use client";
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { NextUIProvider } from "@nextui-org/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
@@ -20,9 +19,7 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <NextUIProvider>{children}</NextUIProvider>
-      </ThemeProvider>
+      <ThemeProvider>{children}</ThemeProvider>
     </QueryClientProvider>
   );
 }

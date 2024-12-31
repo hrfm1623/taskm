@@ -1,10 +1,11 @@
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { Task } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import type { ReactElement } from "react";
-import type { Task } from "@/types/api";
-import { Card, CardBody, Button, Chip } from "@nextui-org/react";
 
 interface TaskCardProps {
   task: Task;
@@ -32,30 +33,28 @@ export function TaskCard({
   };
 
   return (
-    <Card
+    <div
       ref={setNodeRef}
       style={style}
-      className={`${isDragging ? "opacity-50" : ""} w-full`}
+      className={cn(
+        "w-full rounded-lg border bg-card text-card-foreground shadow-sm",
+        isDragging && "opacity-50"
+      )}
       {...attributes}
       {...listeners}
     >
-      <CardBody className="p-4">
+      <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold">{task.title}</h3>
-          <div className="flex gap-2 shrink-0">
-            <Button
-              size="sm"
-              variant="light"
-              color="primary"
-              onPress={() => onEdit(task)}
-            >
+          <div className="flex shrink-0 gap-2">
+            <Button size="sm" variant="ghost" onClick={() => onEdit(task)}>
               編集
             </Button>
             <Button
               size="sm"
-              variant="light"
-              color="danger"
-              onPress={() => onDelete(task.id)}
+              variant="ghost"
+              className="text-destructive hover:bg-destructive/10"
+              onClick={() => onDelete(task.id)}
             >
               削除
             </Button>
@@ -63,41 +62,41 @@ export function TaskCard({
         </div>
 
         {task.description && (
-          <p className="mt-2 text-sm text-foreground-500">{task.description}</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {task.description}
+          </p>
         )}
 
         <div className="mt-4 flex flex-col gap-3">
-          <Chip
-            size="sm"
-            className="shrink-0 w-fit"
+          <span
+            className="inline-flex w-fit items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
             style={{ backgroundColor: task.status.color, color: "#fff" }}
           >
             {task.status.name}
-          </Chip>
+          </span>
 
           {task.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {task.tags.map((tag) => (
-                <Chip
+                <span
                   key={tag.id}
-                  size="sm"
-                  className="shrink-0"
+                  className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
                   style={{ backgroundColor: tag.color, color: "#fff" }}
                 >
                   {tag.name}
-                </Chip>
+                </span>
               ))}
             </div>
           )}
 
           {task.dueDate && (
-            <div className="text-sm text-foreground-500">
+            <div className="text-sm text-muted-foreground">
               期限:{" "}
               {format(new Date(task.dueDate), "yyyy/MM/dd", { locale: ja })}
             </div>
           )}
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 }
