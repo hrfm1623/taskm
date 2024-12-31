@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  distDir: ".vercel/output/static",
+  distDir: ".next",
   experimental: {},
   images: {
     unoptimized: true,
