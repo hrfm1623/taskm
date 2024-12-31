@@ -6,7 +6,7 @@ command = "cd frontend && pnpm install && pnpm pages:build"
 cwd = "frontend"
 
 [build.output]
-directory = ".vercel/output/static"
+directory = "frontend/.next"
 
 [pages]
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = "frontend/.next"

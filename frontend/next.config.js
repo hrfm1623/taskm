@@ -3,10 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: "export",
-  distDir: ".vercel/output/static",
-  experimental: {
-    runtime: "edge",
-  },
+  distDir: ".next",
+  experimental: {},
 };
 
 module.exports = nextConfig;
