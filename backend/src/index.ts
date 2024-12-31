@@ -12,7 +12,21 @@ import type { Env } from "./types/env";
 const app = new Hono<Env>();
 
 // CORSの設定
-app.use("*", cors());
+app.use(
+  "*",
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://taskm.pages.dev",
+      "https://twilight-mouse-9823.hiro3510enic.workers.dev",
+    ],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+    maxAge: 600,
+    credentials: true,
+  })
+);
 
 // サービスの初期化とミドルウェアの設定
 app.use("*", async (c, next) => {
