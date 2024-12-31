@@ -6,13 +6,12 @@
     "dev": "next dev",
     "dev:clear": "next dev --clear",
     "clean": "rm -rf .next/cache",
-    "build": "next build && pnpm clean",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "type-check": "tsc --noEmit",
-    "pages:build": "next build && next-on-pages"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
