@@ -14,7 +14,17 @@ export function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/login", request.url));
 }
 
-// すべてのパスに対してmiddlewareを適用
+// すべてのパスに対してmiddlewareを適用（_next/dataを除外）
 export const config = {
-  matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - _next/data (Next.js data files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|_next/data|favicon.ico).*)",
+  ],
 };
