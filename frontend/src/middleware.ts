@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 // Edgeランタイムを使用することを明示
-export const runtime = "edge";
+export const runtime = "experimental-edge";
 
 export function middleware(request: NextRequest) {
   // すでに/loginページにいる場合はリダイレクトしない
