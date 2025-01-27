@@ -3,6 +3,9 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:pages": "turbo run pages:build",
+    "preview:pages": "turbo run preview --filter=frontend",
+    "deploy:pages": "turbo run deploy --filter=frontend",
     "dev": "fuser -k 8787/tcp || true && turbo dev --force && rm -rf .turbo",
     "lint": "turbo lint",
     "test": "turbo test",

@@ -6,6 +6,18 @@
     "build": {
       "dependsOn": ["^build"]
     },
+    "pages:build": {
+      "dependsOn": ["^build"],
+      "outputs": [".vercel/output/**"]
+    },
+    "preview": {
+      "dependsOn": ["pages:build"],
+      "cache": false
+    },
+    "deploy": {
+      "dependsOn": ["pages:build"],
+      "cache": false
+    },
     "dev": {
       "persistent": true,
       "cache": false
