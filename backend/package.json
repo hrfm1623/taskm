@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev src/index.ts --port 8787",
-    "build": "wrangler deploy --dry-run src/index.ts",
+    "build": "wrangler deploy --dry-run --verbose src/index.ts",
     "deploy": "wrangler deploy src/index.ts",
     "lint": "eslint src/**/*.ts && tsc --noEmit",
     "lint:fix": "eslint src/**/*.ts --fix",
