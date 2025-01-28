@@ -4,10 +4,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
-    config.cache = false;
-    return config;
-  }
+  // webpack: (config) => {
+  //   config.cache = false;
+  //   return config;
+  // }
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
