@@ -23,6 +23,10 @@ const nextConfig = {
   experimental: {
     isrMemoryCacheSize: 0,
   },
+  // 静的エクスポートの設定
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
