@@ -9,7 +9,10 @@
     "dev": "fuser -k 8787/tcp || true && turbo dev --force && rm -rf .turbo",
     "lint": "turbo lint",
     "test": "turbo test",
-    "clean": "turbo clean"
+    "clean": "turbo clean",
+    "docs:serve": "mkdocs serve",
+    "docs:build": "mkdocs build",
+    "docs:deploy": "mkdocs gh-deploy"
   },
   "devDependencies": {
     "turbo": "2.0.1"
