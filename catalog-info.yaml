@@ -1,0 +1,123 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: taskm
+  title: タスク管理アプリ
+  description: Cloudflare WorkersとNext.jsを使用したシンプルなタスク管理アプリケーション
+  annotations:
+    backstage.io/source-location: url:https://github.com/your-org/taskm
+    github.com/project-slug: your-org/taskm
+  tags:
+    - task-management
+    - cloudflare
+    - nextjs
+    - typescript
+    - monorepo
+spec:
+  type: website
+  lifecycle: production
+  owner: team-frontend
+  system: task-management-system
+  dependsOn:
+    - component:taskm-backend
+    - component:taskm-frontend
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: taskm-backend
+  title: タスク管理アプリ - バックエンド
+  description: Cloudflare WorkersとHonoを使用したバックエンドAPI
+  annotations:
+    backstage.io/source-location: url:https://github.com/your-org/taskm
+    github.com/project-slug: your-org/taskm
+  tags:
+    - api
+    - cloudflare-workers
+    - hono
+    - drizzle-orm
+    - typescript
+spec:
+  type: service
+  lifecycle: production
+  owner: team-backend
+  system: task-management-system
+  providesApis:
+    - taskm-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: taskm-frontend
+  title: タスク管理アプリ - フロントエンド
+  description: Next.jsを使用したフロントエンドアプリケーション
+  annotations:
+    backstage.io/source-location: url:https://github.com/your-org/taskm
+    github.com/project-slug: your-org/taskm
+  tags:
+    - frontend
+    - nextjs
+    - react
+    - tailwindcss
+    - typescript
+spec:
+  type: website
+  lifecycle: production
+  owner: team-frontend
+  system: task-management-system
+  consumesApis:
+    - taskm-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: taskm-api
+  title: タスク管理API
+  description: タスク、タグ、ステータス管理のためのREST API
+  annotations:
+    backstage.io/source-location: url:https://github.com/your-org/taskm
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-backend
+  system: task-management-system
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Task Management API
+      version: 1.0.0
+    paths:
+      /api/tasks:
+        get:
+          summary: Get all tasks
+        post:
+          summary: Create a new task
+      /api/tasks/{id}:
+        get:
+          summary: Get a task by ID
+        put:
+          summary: Update a task
+        delete:
+          summary: Delete a task
+      /api/tags:
+        get:
+          summary: Get all tags
+        post:
+          summary: Create a new tag
+      /api/task-status:
+        get:
+          summary: Get all task statuses
+        post:
+          summary: Create a new task status
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: task-management-system
+  title: タスク管理システム
+  description: 個人またはチーム向けのタスク管理システム
+  tags:
+    - task-management
+    - productivity
+spec:
+  owner: team-frontend
