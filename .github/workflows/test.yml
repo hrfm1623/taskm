@@ -1,0 +1,22 @@
+name: Deploy to Cloudflare Pages2
+
+on:
+  workflow_dispatch: # 手動実行用のトリガー
+    inputs:
+      environment:
+        description: "デプロイ環境を選択"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - preview
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Cloudflare Pages
+        run: |
+          curl -X POST "${{ secrets.CLOUD_FLARE_DEPLOY_HOOK }}"
