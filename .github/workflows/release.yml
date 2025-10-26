@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Prepare release metadata
+        id: prepare
+        run: |
+          node scripts/prepare-release.js > release-info.json
+          release=$(jq -r '.release' release-info.json)
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+          if [ "$release" != "true" ]; then
+            jq -r '.reason // "No release triggered"' release-info.json
+            exit 0
+          fi
+          jq -r '.version' release-info.json > .release-version
+          jq -r '.tag' release-info.json > .release-tag
+          jq -r '.changelog' release-info.json > release-notes.md
+          echo "version=$(cat .release-version)" >> "$GITHUB_OUTPUT"
+          echo "tag=$(cat .release-tag)" >> "$GITHUB_OUTPUT"
+          echo "notes=release-notes.md" >> "$GITHUB_OUTPUT"
+
+      - name: Create git tag
+        if: steps.prepare.outputs.release == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.prepare.outputs.tag }}" -m "Release ${{ steps.prepare.outputs.version }}"
+          git push origin "${{ steps.prepare.outputs.tag }}"
+
+      - name: Publish GitHub release
+        if: steps.prepare.outputs.release == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.prepare.outputs.tag }}" \
+            --title "Release ${{ steps.prepare.outputs.version }}" \
+            --notes-file "${{ steps.prepare.outputs.notes }}"
