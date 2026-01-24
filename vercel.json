@@ -3,7 +3,9 @@
   "git": {
     "deploymentEnabled": {
       "develop": false,
-      "feature-*": false
+      "test-*": false
     }
   }
 }
+
+
