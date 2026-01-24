@@ -5,6 +5,9 @@
       "develop": false,
       "test-*": false
     }
+  },
+  "github": {
+    "autoAlias": false
   }
 }
 
